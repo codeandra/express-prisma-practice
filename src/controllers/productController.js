@@ -2,7 +2,7 @@ const prisma = require("../config/database");
 
 const getProducts = async (req, res) => {
   try {
-    const products = await prisma.product.findMany();
+    const products = await prisma.products.findMany();
     res.send({ message: "Get Products Successfully", data: products });
   } catch {
     res.send({ message: "Get Products Failed" });
@@ -12,7 +12,7 @@ const getProducts = async (req, res) => {
 const createProduct = async (req, res) => {
   try {
     const newProduct = req.body;
-    const product = await prisma.product.create({
+    const product = await prisma.products.create({
       data: {
         name: newProduct.name,
         price: newProduct.price,
@@ -26,10 +26,31 @@ const createProduct = async (req, res) => {
   }
 };
 
+const updateProduct = async (req, res) => {
+  try {
+    const productId = req.params.id; // type data params: string
+    const updateData = req.body;
+    const product = await prisma.products.update({
+      where: {
+        id: parseInt(productId), // changes to integer
+      },
+      data: {
+        name: updateData.name,
+        price: updateData.price,
+        description: updateData.description,
+        image: updateData.image,
+      },
+    });
+    res.send({ message: "Update Product Successfully", data: product });
+  } catch {
+    res.send({ message: "Failed Update Product" });
+  }
+}
+
 const deleteProduct = async (req, res) => {
   try {
     const productId = req.params.id; // type data params: string
-    await prisma.product.delete({
+    await prisma.products.delete({
       where: {
         id: parseInt(productId), // changes to integer
       },
@@ -40,4 +61,4 @@ const deleteProduct = async (req, res) => {
   }
 };
 
-module.exports = { getProducts, createProduct, deleteProduct };
+module.exports = { getProducts, createProduct, updateProduct, deleteProduct };
