@@ -12,6 +12,16 @@ const getProducts = async (req, res) => {
 const createProduct = async (req, res) => {
   try {
     const newProduct = req.body;
+
+    if (
+      !newProduct.name ||
+      !newProduct.price ||
+      !newProduct.description ||
+      !newProduct.image
+    ) {
+      return res.send({ message: "Missing required data" });
+    }
+
     const product = await prisma.products.create({
       data: {
         name: newProduct.name,
@@ -30,6 +40,26 @@ const updateProduct = async (req, res) => {
   try {
     const productId = req.params.id; // type data params: string
     const updateData = req.body;
+
+    const productExist = await prisma.products.findUnique({
+      where: {
+        id: parseInt(productId)
+      },
+    });
+
+    if(!productExist) {
+      return res.send({ message: "Update Failed! Product not found" });
+    }
+
+    if (
+      !updateData.name ||
+      !updateData.price ||
+      !updateData.description ||
+      !updateData.image
+    ) {
+      return res.send({ message: "Missing required data" });
+    }
+
     const product = await prisma.products.update({
       where: {
         id: parseInt(productId), // changes to integer
@@ -45,7 +75,7 @@ const updateProduct = async (req, res) => {
   } catch {
     res.send({ message: "Failed Update Product" });
   }
-}
+};
 
 const deleteProduct = async (req, res) => {
   try {
@@ -55,7 +85,7 @@ const deleteProduct = async (req, res) => {
         id: parseInt(productId), // changes to integer
       },
     });
-    res.send({ message: "Delete Product Successfully" });
+    res.send({ message: `Delete Product ID: ${productId} Successfully` });
   } catch {
     res.send({ message: "Failed Delete Product" });
   }
