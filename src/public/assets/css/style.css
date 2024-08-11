@@ -39,6 +39,12 @@
 .content #content-users {
     margin-top: 15px;
 }
+.content #content-products {
+    margin-top: 15px;
+}
+.content #content-orders {
+    margin-top: 15px;
+}
 
 .content .item {
     font-size: 14px;
