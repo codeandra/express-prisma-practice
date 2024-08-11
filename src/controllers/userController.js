@@ -15,15 +15,19 @@ const hashPassword = async (password) => {
 const getUsers = async (req, res) => {
   try {
     const users = await prisma.users.findMany();
-    res.send({ message: "Get Users Successfully", data: users });
+    res.status(200).send({ message: "Get Users Successfully", data: users });
   } catch {
-    res.send({ message: "Get Users Failed" });
+    res.status(400).send({ message: "Get Users Failed" });
   }
 };
 
 const createUser = async (req, res) => {
   try {
     const newUser = req.body;
+
+    if(!newUser.name || !newUser.email || !newUser.username || !newUser.password) {
+      return res.status(400).send({ message: "Failed to create user! All fields are required" });
+    }
 
     const emailExist = await prisma.users.findUnique({
       where: {
@@ -32,7 +36,7 @@ const createUser = async (req, res) => {
     });
 
     if(emailExist) {
-      return res.send({ message: "Email already exist" });
+      return res.status(400).send({ message: "Email already exist" });
     }
 
     const usernameExist = await prisma.users.findUnique({
@@ -42,7 +46,7 @@ const createUser = async (req, res) => {
     });
 
     if(usernameExist) {
-      return res.send({ message: "Username already exist" });
+      return res.status(400).send({ message: "Username already exist" });
     }
 
     const user = await prisma.users.create({
@@ -53,9 +57,9 @@ const createUser = async (req, res) => {
         password: await hashPassword(newUser.password),
       },
     });
-    res.send({ message: "Create User Successfully", data: user });
+    res.status(201).send({ message: "Create User Successfully", data: user });
   } catch {
-    res.send({ message: "Create User Failed" });
+    res.status(400).send({ message: "Create User Failed" });
   }
 };
 
@@ -71,7 +75,7 @@ const updateUser = async (req, res) => {
     });
 
     if (usernameExist) {
-      return res.send({ message: "Update Failed! Username Already Exist" });
+      return res.status(400).send({ message: "Update Failed! Username Already Exist" });
     }
 
     const emailExist = await prisma.users.findUnique({
@@ -81,7 +85,7 @@ const updateUser = async (req, res) => {
     });
 
     if (emailExist) {
-      return res.send({ message: "Update Failed! Email Already Exist" });
+      return res.status(400).send({ message: "Update Failed! Email Already Exist" });
     }
 
     const user = await prisma.users.update({
@@ -95,9 +99,9 @@ const updateUser = async (req, res) => {
         password: await hashPassword(updateData.password),
       },
     });
-    res.send({ message: "Update User Successfully", data: user });
+    res.status(200).send({ message: "Update User Successfully", data: user });
   } catch {
-    res.send({ message: "Failed Update User" });
+    res.status(400).send({ message: "Failed Update User" });
   }
 }
 
@@ -109,9 +113,9 @@ const deleteUser = async (req, res) => {
         id: parseInt(userId), // changes to integer
       },
     });
-    res.send({ message: `Delete User ID: ${userId} Successfully` });
+    res.status(200).send({ message: `Delete User ID: ${userId} Successfully` });
   } catch {
-    res.send({ message: "Failed Delete User" });
+    res.status(400).send({ message: "Failed Delete User" });
   }
 };
 

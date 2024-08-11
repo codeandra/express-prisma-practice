@@ -3,9 +3,9 @@ const prisma = require("../config/database");
 const getProducts = async (req, res) => {
   try {
     const products = await prisma.products.findMany();
-    res.send({ message: "Get Products Successfully", data: products });
+    res.status(200).send({ message: "Get Products Successfully", data: products });
   } catch {
-    res.send({ message: "Get Products Failed" });
+    res.status(400).send({ message: "Get Products Failed" });
   }
 };
 
@@ -19,7 +19,7 @@ const createProduct = async (req, res) => {
       !newProduct.description ||
       !newProduct.image
     ) {
-      return res.send({ message: "Missing required data" });
+      return res.status(400).send({ message: "Failed to create product! All fields are required" });
     }
 
     const product = await prisma.products.create({
@@ -30,9 +30,9 @@ const createProduct = async (req, res) => {
         image: newProduct.image,
       },
     });
-    res.send({ message: "Create Product Successfully", data: product });
+    res.status(201).send({ message: "Create Product Successfully", data: product });
   } catch {
-    res.send({ message: "Create Product Failed" });
+    res.status(400).send({ message: "Create Product Failed" });
   }
 };
 
@@ -48,7 +48,7 @@ const updateProduct = async (req, res) => {
     });
 
     if(!productExist) {
-      return res.send({ message: "Update Failed! Product not found" });
+      return res.status(400).send({ message: "Update Failed! Product not found" });
     }
 
     if (
@@ -57,7 +57,7 @@ const updateProduct = async (req, res) => {
       !updateData.description ||
       !updateData.image
     ) {
-      return res.send({ message: "Missing required data" });
+      return res.status(400).send({ message: "Update Failed! All fields are required" });
     }
 
     const product = await prisma.products.update({
@@ -71,9 +71,9 @@ const updateProduct = async (req, res) => {
         image: updateData.image,
       },
     });
-    res.send({ message: "Update Product Successfully", data: product });
+    res.status(200).send({ message: "Update Product Successfully", data: product });
   } catch {
-    res.send({ message: "Failed Update Product" });
+    res.status(400).send({ message: "Failed Update Product" });
   }
 };
 
@@ -85,9 +85,9 @@ const deleteProduct = async (req, res) => {
         id: parseInt(productId), // changes to integer
       },
     });
-    res.send({ message: `Delete Product ID: ${productId} Successfully` });
+    res.status(200).send({ message: `Delete Product ID: ${productId} Successfully` });
   } catch {
-    res.send({ message: "Failed Delete Product" });
+    res.status(400).send({ message: "Failed Delete Product" });
   }
 };
 
