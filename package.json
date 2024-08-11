@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/app.js",
   "scripts": {
-  "build": "prisma generate && your-build-command",
+  "postinstall": "prisma generate",
   "start": "node src/app.js"
 },
   "author": "",
