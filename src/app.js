@@ -1,19 +1,19 @@
 const express = require("express");
 const PORT = require("./config/server");
-const helmet = require('helmet');
-const cors = require('cors');
+// const helmet = require('helmet');
+// const cors = require('cors');
 const path = require('path');
 
 const app = express();
 
-app.use(helmet()); // to secure your app
-app.use(cors()); // to secure your app
+// app.use(helmet()); // to secure your app
+// app.use(cors()); // to secure your app
 app.use(express.json()); // to support JSON-encoded bodies
 app.use(express.static(path.join(__dirname, "public"))); // to serve static files
 
 // routes index
 app.get("/", (req, res) => {
-  res.sendFile(__dirname, "/public/views/index.html");
+  res.sendFile(__dirname + "/public/views/index.html");
 });
 
 // routes
