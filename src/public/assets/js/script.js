@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const baseUrl = "http://localhost:2000";
+  const baseUrl = "https://express-prisma-practice.vercel.app/"; // deploy url
   const listApiUsers = fetch(`${baseUrl}/list-api?name=users`)
     .then((response) => response.json())
     .then((apiList) => {
